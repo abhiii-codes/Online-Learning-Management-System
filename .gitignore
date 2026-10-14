@@ -1,0 +1,7 @@
+target/
+tomcat.8080/
+node_modules/
+frontend/node_modules/
+*.log
+.DS_Store
+Thumbs.db
