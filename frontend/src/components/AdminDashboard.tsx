@@ -1,407 +1,548 @@
 import React, { useState, useEffect } from 'react';
 import { User, Course, AuditLog } from '../types';
 import { api } from '../services/api';
+import { Button } from './ui/Button';
+import { Input } from './ui/Input';
+import { Badge } from './ui/Badge';
+import { Card } from './ui/Card';
+import { Table, TableHead, TableHeader, TableRow, TableCell } from './ui/Table';
+import { EmptyState } from './ui/EmptyState';
+import { SkeletonRow } from './ui/Skeleton';
+import { Modal } from './ui/Modal';
+import { useToast } from './ui/Toast';
 import {
-  Shield, Users, BookOpen, Activity, Settings, Plus,
-  Database, CheckCircle, AlertTriangle, Key, Search
+  Users, BookOpen, Shield, FileText, Settings, Plus,
+  Search, RotateCw, CheckCircle2, AlertTriangle, Eye
 } from 'lucide-react';
 
-export const AdminDashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'courses' | 'audit' | 'settings'>('overview');
+interface AdminDashboardProps {
+  activeTab?: string;
+  onTabChange?: (tab: string) => void;
+}
+
+function formatRelativeTime(dateString?: string): string {
+  if (!dateString) return '-';
+  try {
+    const date = new Date(dateString.replace(' ', 'T'));
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    if (isNaN(diffMs)) return dateString;
+    const diffSec = Math.floor(diffMs / 1000);
+    const diffMin = Math.floor(diffSec / 60);
+    const diffHour = Math.floor(diffMin / 60);
+    const diffDay = Math.floor(diffHour / 24);
+
+    if (diffSec < 60) return 'just now';
+    if (diffMin < 60) return `${diffMin}m ago`;
+    if (diffHour < 24) return `${diffHour}h ago`;
+    if (diffDay === 1) return 'yesterday';
+    if (diffDay < 30) return `${diffDay}d ago`;
+    return date.toLocaleDateString();
+  } catch {
+    return dateString;
+  }
+}
+
+export const AdminDashboard: React.FC<AdminDashboardProps> = ({
+  activeTab = 'overview',
+  onTabChange,
+}) => {
+  const { toast } = useToast();
+  const [currentTab, setCurrentTab] = useState(activeTab);
+
+  useEffect(() => {
+    if (activeTab) setCurrentTab(activeTab);
+  }, [activeTab]);
+
+  const handleTabClick = (tab: string) => {
+    setCurrentTab(tab);
+    if (onTabChange) onTabChange(tab);
+  };
+
   const [stats, setStats] = useState<any>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [settings, setSettings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  // New User Modal State
+  // Search & filter states
+  const [userSearch, setUserSearch] = useState('');
+  const [userRoleFilter, setUserRoleFilter] = useState('');
+  const [courseSearch, setCourseSearch] = useState('');
+
+  // Modals
   const [showAddUser, setShowAddUser] = useState(false);
   const [newUser, setNewUser] = useState({ name: '', email: '', password: '', role: 'STUDENT', bio: '' });
+  const [creatingUser, setCreatingUser] = useState(false);
 
-  const loadAll = async () => {
+  const loadData = async () => {
     setLoading(true);
+    setError('');
     try {
       const [adminStats, usersData, coursesData, logsData, settingsData] = await Promise.all([
         api.getAdminStats(),
         api.getUsers(1, 100),
         api.getCourses(),
         api.getAuditLogs(50),
-        api.getSettings()
+        api.getSettings(),
       ]);
       setStats(adminStats);
-      setUsers(usersData.users);
-      setCourses(coursesData.courses);
-      setAuditLogs(logsData);
-      setSettings(settingsData);
-    } catch (err) {
-      console.error(err);
+      setUsers(usersData.users || []);
+      setCourses(coursesData.courses || []);
+      setAuditLogs(logsData || []);
+      setSettings(settingsData || []);
+    } catch (err: any) {
+      setError(err.message || 'Failed to load administration data');
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    loadAll();
+    loadData();
   }, []);
 
   const handleCreateUser = async (e: React.FormEvent) => {
     e.preventDefault();
+    setCreatingUser(true);
     try {
       await api.createUser(newUser);
       setShowAddUser(false);
       setNewUser({ name: '', email: '', password: '', role: 'STUDENT', bio: '' });
-      loadAll();
+      toast('User account created', 'success');
+      loadData();
     } catch (err: any) {
-      alert(err.message || 'Failed to create user');
+      toast(err.message || 'Failed to create user', 'error');
+    } finally {
+      setCreatingUser(false);
     }
   };
 
-  const handleToggleCourseStatus = async (courseId: number, currentStatus: string) => {
+  const handleToggleUserStatus = async (user: User) => {
+    const nextStatus = user.status === 'ACTIVE' ? 'SUSPENDED' : 'ACTIVE';
     try {
-      if (currentStatus === 'PUBLISHED') {
-        await api.archiveCourse(courseId);
-      } else {
-        await api.publishCourse(courseId);
-      }
-      loadAll();
+      await api.updateUser(user.id, {
+        name: user.name,
+        role: user.role,
+        bio: user.bio,
+        status: nextStatus,
+      });
+      toast(`User marked ${nextStatus.toLowerCase()}`, 'success');
+      loadData();
     } catch (err: any) {
-      alert(err.message || 'Status update failed');
+      toast(err.message || 'Status change failed', 'error');
     }
   };
+
+  const handleCourseStatusToggle = async (course: Course) => {
+    try {
+      if (course.status === 'PUBLISHED') {
+        await api.archiveCourse(course.id);
+        toast('Course archived', 'success');
+      } else {
+        await api.publishCourse(course.id);
+        toast('Course published', 'success');
+      }
+      loadData();
+    } catch (err: any) {
+      toast(err.message || 'Failed to update course', 'error');
+    }
+  };
+
+  const filteredUsers = users.filter((u) => {
+    const matchesSearch =
+      u.name.toLowerCase().includes(userSearch.toLowerCase()) ||
+      u.email.toLowerCase().includes(userSearch.toLowerCase());
+    const matchesRole = !userRoleFilter || u.role === userRoleFilter;
+    return matchesSearch && matchesRole;
+  });
+
+  const filteredCourses = courses.filter((c) =>
+    c.title.toLowerCase().includes(courseSearch.toLowerCase()) ||
+    c.code.toLowerCase().includes(courseSearch.toLowerCase()) ||
+    c.instructorName.toLowerCase().includes(courseSearch.toLowerCase())
+  );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      {/* Top Banner & Tab Navigation */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-6 border-b border-slate-200 gap-4">
-        <div>
-          <div className="flex items-center space-x-2">
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">System Administration Console</h1>
-            <span className="px-2 py-0.5 text-xs rounded bg-amber-100 text-amber-900 font-bold border border-amber-300">
-              Admin Level
-            </span>
-          </div>
-          <p className="text-xs text-slate-600 mt-0.5">Global oversight: User lifecycle, Course moderation, Audit trail, and System settings</p>
+    <div className="space-y-6">
+      {/* Tab Navigation header */}
+      <div className="flex items-center justify-between border-b border-line pb-3">
+        <div className="flex space-x-1">
+          {[
+            { id: 'overview', label: 'Overview' },
+            { id: 'users', label: 'Users' },
+            { id: 'courses', label: 'Courses' },
+            { id: 'audit', label: 'Audit log' },
+            { id: 'settings', label: 'Settings' },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => handleTabClick(tab.id)}
+              className={`px-3 py-1.5 text-xs font-medium rounded-control transition-colors ${
+                currentTab === tab.id
+                  ? 'bg-surface text-ink border border-line shadow-none'
+                  : 'text-muted hover:text-ink hover:bg-paper'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
 
-        <div className="flex bg-slate-200/80 p-1 rounded-xl text-xs font-bold overflow-x-auto">
-          <button
-            onClick={() => setActiveTab('overview')}
-            className={`px-3 py-1.5 rounded-lg transition ${activeTab === 'overview' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'}`}
-          >
-            Overview
-          </button>
-          <button
-            onClick={() => setActiveTab('users')}
-            className={`px-3 py-1.5 rounded-lg transition ${activeTab === 'users' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'}`}
-          >
-            Users ({users.length})
-          </button>
-          <button
-            onClick={() => setActiveTab('courses')}
-            className={`px-3 py-1.5 rounded-lg transition ${activeTab === 'courses' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'}`}
-          >
-            Courses ({courses.length})
-          </button>
-          <button
-            onClick={() => setActiveTab('audit')}
-            className={`px-3 py-1.5 rounded-lg transition ${activeTab === 'audit' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'}`}
-          >
-            Audit Logs
-          </button>
-          <button
-            onClick={() => setActiveTab('settings')}
-            className={`px-3 py-1.5 rounded-lg transition ${activeTab === 'settings' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'}`}
-          >
-            Settings
-          </button>
+        {currentTab === 'users' && (
+          <Button variant="primary" size="sm" icon={<Plus className="w-3.5 h-3.5" />} onClick={() => setShowAddUser(true)}>
+            Add user
+          </Button>
+        )}
+      </div>
+
+      {error && (
+        <div className="p-3.5 bg-[#FEF2F2] border border-[#FECACA] rounded-container text-xs text-status-full flex items-center justify-between">
+          <span>{error}</span>
+          <Button variant="ghost" size="sm" onClick={loadData}>Retry</Button>
+        </div>
+      )}
+
+      {/* ONE Summary Strip: 4 cells separated by hairlines */}
+      <div className="border border-line rounded-container bg-surface grid grid-cols-2 lg:grid-cols-4 divide-y lg:divide-y-0 lg:divide-x divide-line">
+        <div className="p-4 sm:p-5">
+          <p className="text-xs text-muted font-normal">Total users</p>
+          <p className="text-2xl font-normal text-ink mt-1 tabular-nums">
+            {loading ? '-' : stats?.totalUsers ?? users.length}
+          </p>
+        </div>
+        <div className="p-4 sm:p-5">
+          <p className="text-xs text-muted font-normal">Active courses</p>
+          <p className="text-2xl font-normal text-ink mt-1 tabular-nums">
+            {loading ? '-' : stats?.totalCourses ?? courses.length}
+          </p>
+        </div>
+        <div className="p-4 sm:p-5">
+          <p className="text-xs text-muted font-normal">Active enrollments</p>
+          <p className="text-2xl font-normal text-ink mt-1 tabular-nums">
+            {loading ? '-' : stats?.activeEnrollments ?? 0}
+          </p>
+        </div>
+        <div className="p-4 sm:p-5 min-w-0">
+          <p className="text-xs text-muted font-normal">Database engine</p>
+          <p className="text-sm font-medium text-ink mt-1 truncate" title={stats?.databaseEngine || 'MySQL / H2 Pool'}>
+            {loading ? '-' : stats?.databaseEngine || 'MySQL 8.x'}
+          </p>
         </div>
       </div>
 
       {/* Tab: Overview */}
-      {activeTab === 'overview' && (
+      {currentTab === 'overview' && (
         <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center space-x-3">
-              <div className="p-3 bg-blue-100 text-blue-700 rounded-xl"><Users className="w-6 h-6" /></div>
-              <div>
-                <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Total Users</p>
-                <h3 className="text-xl font-bold text-slate-900">{stats?.totalUsers ?? users.length}</h3>
-                <p className="text-[10px] text-slate-400">{stats?.totalStudents} Students | {stats?.totalInstructors} Instructors</p>
+          {/* Recent Audit Entries snippet */}
+          <Card
+            header={
+              <div className="flex items-center justify-between w-full">
+                <h3 className="text-sm font-medium text-ink">Recent system activity</h3>
+                <Button variant="ghost" size="sm" onClick={() => handleTabClick('audit')}>
+                  View all &rarr;
+                </Button>
               </div>
-            </div>
-
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center space-x-3">
-              <div className="p-3 bg-emerald-100 text-emerald-700 rounded-xl"><BookOpen className="w-6 h-6" /></div>
-              <div>
-                <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Courses</p>
-                <h3 className="text-xl font-bold text-slate-900">{stats?.totalCourses ?? courses.length}</h3>
-                <p className="text-[10px] text-slate-400">Total Catalog Listings</p>
+            }
+          >
+            {loading ? (
+              <div className="divide-y divide-line">
+                <SkeletonRow cols={4} />
+                <SkeletonRow cols={4} />
               </div>
-            </div>
-
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center space-x-3">
-              <div className="p-3 bg-purple-100 text-purple-700 rounded-xl"><Activity className="w-6 h-6" /></div>
-              <div>
-                <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Enrollments</p>
-                <h3 className="text-xl font-bold text-slate-900">{stats?.totalEnrollments ?? 0}</h3>
-                <p className="text-[10px] text-slate-400">Active Student Enrollments</p>
-              </div>
-            </div>
-
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center space-x-3">
-              <div className="p-3 bg-amber-100 text-amber-700 rounded-xl"><Database className="w-6 h-6" /></div>
-              <div className="min-w-0">
-                <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Active DB Engine</p>
-                <h3 className="text-xs sm:text-sm font-bold text-slate-900 break-words leading-tight" title={stats?.databaseType}>
-                  {stats?.databaseType ?? 'Relational JDBC'}
-                </h3>
-                <p className="text-[10px] text-slate-400">HikariCP Pool Managed</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Quick Recent Activity preview */}
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-            <h3 className="font-bold text-sm text-slate-900 mb-4 flex items-center space-x-2">
-              <Shield className="w-4 h-4 text-red-600" />
-              <span>Recent System Activity Audit</span>
-            </h3>
-            <div className="divide-y divide-slate-100 max-h-72 overflow-y-auto">
-              {auditLogs.slice(0, 8).map((log) => (
-                <div key={log.id} className="py-2.5 flex justify-between items-center text-xs">
-                  <div>
-                    <span className="font-bold text-slate-800">{log.action}</span>
-                    <span className="text-slate-500 ml-2">by {log.userName || 'System'}</span>
-                    <p className="text-[11px] text-slate-500">{log.details}</p>
+            ) : auditLogs.length === 0 ? (
+              <EmptyState title="No activity recorded" description="Audit logs will appear here as users interact with the platform." />
+            ) : (
+              <div className="divide-y divide-line -m-5">
+                {auditLogs.slice(0, 5).map((log) => (
+                  <div key={log.id} className="p-3.5 flex items-center justify-between text-xs hover:bg-paper/30">
+                    <div className="min-w-0 pr-4">
+                      <p className="font-medium text-ink truncate">{log.action}</p>
+                      <p className="text-muted text-[11px] truncate mt-0.5">
+                        User #{log.userId ?? 'system'} &bull; IP: {log.ipAddress || 'internal'}
+                      </p>
+                    </div>
+                    <span className="text-muted tabular-nums whitespace-nowrap text-[11px]" title={log.timestamp}>
+                      {formatRelativeTime(log.timestamp)}
+                    </span>
                   </div>
-                  <span className="text-[10px] text-slate-400 font-mono">{log.timestamp}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Tab: Users Management */}
-      {activeTab === 'users' && (
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
-            <h3 className="font-bold text-sm text-slate-900">Registered Platform Users</h3>
-            <button
-              onClick={() => setShowAddUser(true)}
-              className="px-3 py-1.5 text-xs bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg shadow-sm flex items-center space-x-1"
-            >
-              <Plus className="w-3.5 h-3.5" />
-              <span>Create User</span>
-            </button>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-slate-600">
-              <thead className="bg-slate-100 text-slate-700 uppercase font-bold text-[10px] tracking-wider border-b border-slate-200">
-                <tr>
-                  <th className="p-3">ID</th>
-                  <th className="p-3">Name</th>
-                  <th className="p-3">Email</th>
-                  <th className="p-3">Role</th>
-                  <th className="p-3">Status</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {users.map((u) => (
-                  <tr key={u.id} className="hover:bg-slate-50 transition">
-                    <td className="p-3 font-mono font-bold text-slate-800">#{u.id}</td>
-                    <td className="p-3 font-semibold text-slate-900">{u.name}</td>
-                    <td className="p-3 font-mono text-slate-600">{u.email}</td>
-                    <td className="p-3">
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                        u.role === 'ADMIN' ? 'bg-amber-100 text-amber-900 border border-amber-300' :
-                        u.role === 'INSTRUCTOR' ? 'bg-green-100 text-green-800 border border-green-300' :
-                        'bg-blue-100 text-blue-800 border border-blue-300'
-                      }`}>
-                        {u.role}
-                      </span>
-                    </td>
-                    <td className="p-3">
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700">
-                        {u.status}
-                      </span>
-                    </td>
-                  </tr>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </div>
+            )}
+          </Card>
         </div>
       )}
 
-      {/* Tab: Courses Oversight */}
-      {activeTab === 'courses' && (
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="p-4 bg-slate-50 border-b border-slate-200">
-            <h3 className="font-bold text-sm text-slate-900">All Courses Across Instructors</h3>
+      {/* Tab: Users Table */}
+      {currentTab === 'users' && (
+        <div className="space-y-4">
+          <div className="flex flex-col sm:flex-row gap-2.5">
+            <div className="flex-1">
+              <Input
+                placeholder="Filter by name or email..."
+                value={userSearch}
+                onChange={(e) => setUserSearch(e.target.value)}
+              />
+            </div>
+            <select
+              value={userRoleFilter}
+              onChange={(e) => setUserRoleFilter(e.target.value)}
+              className="px-3 py-1.5 text-xs bg-surface border border-line rounded-control text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            >
+              <option value="">All roles</option>
+              <option value="STUDENT">Student</option>
+              <option value="INSTRUCTOR">Instructor</option>
+              <option value="ADMIN">Admin</option>
+            </select>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-slate-600">
-              <thead className="bg-slate-100 text-slate-700 uppercase font-bold text-[10px] tracking-wider border-b border-slate-200">
+
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableHeader>ID</TableHeader>
+                <TableHeader>Name</TableHeader>
+                <TableHeader>Email</TableHeader>
+                <TableHeader>Role</TableHeader>
+                <TableHeader>Status</TableHeader>
+                <TableHeader align="right">Actions</TableHeader>
+              </TableRow>
+            </TableHead>
+            <tbody>
+              {loading ? (
                 <tr>
-                  <th className="p-3">Code</th>
-                  <th className="p-3">Title</th>
-                  <th className="p-3">Instructor</th>
-                  <th className="p-3">Category</th>
-                  <th className="p-3">Status</th>
-                  <th className="p-3">Enrolled</th>
-                  <th className="p-3 text-right">Actions</th>
+                  <td colSpan={6} className="p-4">
+                    <SkeletonRow cols={5} />
+                    <SkeletonRow cols={5} />
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {courses.map((c) => (
-                  <tr key={c.id} className="hover:bg-slate-50 transition">
-                    <td className="p-3 font-mono font-bold text-slate-800">{c.code}</td>
-                    <td className="p-3 font-semibold text-slate-900">{c.title}</td>
-                    <td className="p-3 text-slate-700">{c.instructorName}</td>
-                    <td className="p-3 text-slate-500">{c.category}</td>
-                    <td className="p-3">
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                        c.status === 'PUBLISHED' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
-                      }`}>
-                        {c.status}
-                      </span>
-                    </td>
-                    <td className="p-3">{c.enrolledCount} / {c.capacity}</td>
-                    <td className="p-3 text-right">
-                      <button
-                        onClick={() => handleToggleCourseStatus(c.id, c.status)}
-                        className="text-xs font-bold text-blue-600 hover:text-blue-800"
+              ) : filteredUsers.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="p-8 text-center text-xs text-muted">
+                    No users matching criteria.
+                  </td>
+                </tr>
+              ) : (
+                filteredUsers.map((u) => (
+                  <TableRow key={u.id}>
+                    <TableCell className="font-mono text-xs tabular-nums text-muted">#{u.id}</TableCell>
+                    <TableCell className="font-medium">{u.name}</TableCell>
+                    <TableCell className="text-muted">{u.email}</TableCell>
+                    <TableCell>
+                      <Badge variant="neutral">
+                        {u.role === 'STUDENT' ? 'Student' : u.role === 'INSTRUCTOR' ? 'Instructor' : 'Admin'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={u.status === 'ACTIVE' ? 'open' : 'full'}>
+                        {u.status === 'ACTIVE' ? 'Active' : 'Suspended'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleToggleUserStatus(u)}
+                      >
+                        {u.status === 'ACTIVE' ? 'Suspend' : 'Activate'}
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </tbody>
+          </Table>
+        </div>
+      )}
+
+      {/* Tab: Courses Table */}
+      {currentTab === 'courses' && (
+        <div className="space-y-4">
+          <Input
+            placeholder="Search courses by code, title, or instructor..."
+            value={courseSearch}
+            onChange={(e) => setCourseSearch(e.target.value)}
+          />
+
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableHeader>Code</TableHeader>
+                <TableHeader>Title</TableHeader>
+                <TableHeader>Instructor</TableHeader>
+                <TableHeader>Level</TableHeader>
+                <TableHeader align="right">Enrolled</TableHeader>
+                <TableHeader>Status</TableHeader>
+                <TableHeader align="right">Actions</TableHeader>
+              </TableRow>
+            </TableHead>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <td colSpan={7} className="p-4">
+                    <SkeletonRow cols={6} />
+                    <SkeletonRow cols={6} />
+                  </td>
+                </tr>
+              ) : filteredCourses.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="p-8 text-center text-xs text-muted">
+                    No courses found.
+                  </td>
+                </tr>
+              ) : (
+                filteredCourses.map((c) => (
+                  <TableRow key={c.id}>
+                    <TableCell className="font-mono text-xs tabular-nums font-medium">{c.code}</TableCell>
+                    <TableCell className="font-medium">{c.title}</TableCell>
+                    <TableCell className="text-muted">{c.instructorName}</TableCell>
+                    <TableCell>
+                      <Badge variant="outline">{c.level}</Badge>
+                    </TableCell>
+                    <TableCell align="right" className="tabular-nums">
+                      {c.enrolledCount} of {c.capacity}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={c.status === 'PUBLISHED' ? 'open' : 'neutral'}>
+                        {c.status === 'PUBLISHED' ? 'Published' : 'Archived'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleCourseStatusToggle(c)}
                       >
                         {c.status === 'PUBLISHED' ? 'Archive' : 'Publish'}
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </tbody>
+          </Table>
         </div>
       )}
 
-      {/* Tab: Security Audit Logs */}
-      {activeTab === 'audit' && (
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
-            <h3 className="font-bold text-sm text-slate-900">Security & Operational Audit Log Trail</h3>
-            <span className="text-xs text-slate-500">Live JDBC table: audit_logs</span>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-slate-600">
-              <thead className="bg-slate-100 text-slate-700 uppercase font-bold text-[10px] tracking-wider border-b border-slate-200">
-                <tr>
-                  <th className="p-3">Timestamp</th>
-                  <th className="p-3">User</th>
-                  <th className="p-3">Action</th>
-                  <th className="p-3">Entity</th>
-                  <th className="p-3">Details</th>
-                  <th className="p-3">IP Address</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 font-mono">
-                {auditLogs.map((log) => (
-                  <tr key={log.id} className="hover:bg-slate-50 transition">
-                    <td className="p-3 text-[11px] text-slate-500 whitespace-nowrap">{log.timestamp ? new Date(log.timestamp).toLocaleString() : '-'}</td>
-                    <td className="p-3 font-bold text-slate-800">{log.userName || (log.userId ? `User #${log.userId}` : 'System')}</td>
-                    <td className="p-3 text-blue-700 font-bold">{log.action}</td>
-                    <td className="p-3 text-slate-700">{log.entityName} #{log.entityId || '-'}</td>
-                    <td className="p-3 text-slate-600 font-sans text-xs">{log.details}</td>
-                    <td className="p-3 text-slate-400 text-[11px]">{log.ipAddress}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+      {/* Tab: Audit Log */}
+      {currentTab === 'audit' && (
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableHeader>ID</TableHeader>
+              <TableHeader>Action</TableHeader>
+              <TableHeader>Details</TableHeader>
+              <TableHeader>User</TableHeader>
+              <TableHeader>IP</TableHeader>
+              <TableHeader align="right">Time</TableHeader>
+            </TableRow>
+          </TableHead>
+          <tbody>
+            {loading ? (
+              <tr>
+                <td colSpan={6} className="p-4">
+                  <SkeletonRow cols={5} />
+                  <SkeletonRow cols={5} />
+                </td>
+              </tr>
+            ) : auditLogs.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="p-8 text-center text-xs text-muted">
+                  No audit logs available.
+                </td>
+              </tr>
+            ) : (
+              auditLogs.map((log) => (
+                <TableRow key={log.id}>
+                  <TableCell className="font-mono text-xs tabular-nums text-muted">#{log.id}</TableCell>
+                  <TableCell className="font-medium text-xs">{log.action}</TableCell>
+                  <TableCell className="text-xs text-muted max-w-xs truncate" title={log.details}>
+                    {log.details || '-'}
+                  </TableCell>
+                  <TableCell className="text-xs tabular-nums text-muted">
+                    {log.userId ? `#${log.userId}` : 'system'}
+                  </TableCell>
+                  <TableCell className="font-mono text-xs text-muted">{log.ipAddress || '-'}</TableCell>
+                  <TableCell align="right" className="text-xs text-muted tabular-nums" title={log.timestamp}>
+                    {formatRelativeTime(log.timestamp)}
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </tbody>
+        </Table>
       )}
 
       {/* Tab: Settings */}
-      {activeTab === 'settings' && (
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
-          <h3 className="font-bold text-base text-slate-900 mb-2">System Configuration Settings</h3>
-          <p className="text-xs text-slate-500 mb-4">Values stored in MySQL table system_settings</p>
-
-          <div className="divide-y divide-slate-200">
-            {settings.map((s) => (
-              <div key={s.key} className="py-3 flex justify-between items-center">
+      {currentTab === 'settings' && (
+        <Card header={<h3 className="text-sm font-medium text-ink">System configurations</h3>}>
+          <div className="divide-y divide-line -m-5">
+            {settings.map((s, idx) => (
+              <div key={idx} className="p-4 flex items-center justify-between text-xs hover:bg-paper/30">
                 <div>
-                  <p className="text-xs font-bold text-slate-800">{s.key}</p>
-                  <p className="text-[11px] text-slate-500">{s.description}</p>
+                  <p className="font-mono font-medium text-ink">{s.settingKey}</p>
+                  <p className="text-muted mt-0.5">{s.description || 'System policy parameter'}</p>
                 </div>
-                <span className="font-mono text-xs bg-slate-100 px-3 py-1 rounded font-bold text-slate-800">
-                  {s.value}
-                </span>
+                <Badge variant="neutral">{s.settingValue}</Badge>
               </div>
             ))}
           </div>
-        </div>
+        </Card>
       )}
 
-      {/* Modal: Create User */}
-      {showAddUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <form onSubmit={handleCreateUser} className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4">
-            <h3 className="font-bold text-base text-slate-900">Provision System User</h3>
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Full Name</label>
-              <input
-                type="text"
-                required
-                value={newUser.name}
-                onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
-                className="w-full p-2 text-xs border rounded-lg"
-                placeholder="Dr. Claude Shannon"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Email</label>
-              <input
-                type="email"
-                required
-                value={newUser.email}
-                onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-                className="w-full p-2 text-xs border rounded-lg"
-                placeholder="shannon@lms.edu"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Password</label>
-              <input
-                type="password"
-                required
-                value={newUser.password}
-                onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
-                className="w-full p-2 text-xs border rounded-lg"
-                placeholder="••••••••"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Role Assignment</label>
-              <select
-                value={newUser.role}
-                onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
-                className="w-full p-2 text-xs border rounded-lg bg-white"
-              >
-                <option value="STUDENT">STUDENT (Learner)</option>
-                <option value="INSTRUCTOR">INSTRUCTOR (Faculty)</option>
-                <option value="ADMIN">ADMIN (System Administrator)</option>
-              </select>
-            </div>
-            <div className="flex justify-end space-x-2 pt-2">
-              <button type="button" onClick={() => setShowAddUser(false)} className="px-3 py-1.5 text-xs text-slate-600">Cancel</button>
-              <button type="submit" className="px-4 py-1.5 text-xs bg-red-600 text-white font-bold rounded-lg shadow-sm">Save User</button>
-            </div>
-          </form>
-        </div>
-      )}
+      {/* Add User Modal */}
+      <Modal
+        isOpen={showAddUser}
+        onClose={() => setShowAddUser(false)}
+        title="Create user account"
+      >
+        <form onSubmit={handleCreateUser} className="space-y-4">
+          <Input
+            label="Full name"
+            placeholder="Ada Lovelace"
+            value={newUser.name}
+            onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
+            required
+          />
+          <Input
+            label="Email address"
+            type="email"
+            placeholder="ada@lms.edu"
+            value={newUser.email}
+            onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+            required
+          />
+          <Input
+            label="Password"
+            type="password"
+            placeholder="Minimum 8 characters"
+            value={newUser.password}
+            onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+            required
+          />
+          <div className="space-y-1">
+            <label className="block text-xs font-medium text-ink">Role</label>
+            <select
+              value={newUser.role}
+              onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
+              className="w-full px-3 py-1.5 text-sm bg-surface border border-line rounded-control text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            >
+              <option value="STUDENT">Student</option>
+              <option value="INSTRUCTOR">Instructor</option>
+              <option value="ADMIN">Admin</option>
+            </select>
+          </div>
+          <div className="pt-2 flex justify-end space-x-2">
+            <Button variant="secondary" size="md" type="button" onClick={() => setShowAddUser(false)}>
+              Cancel
+            </Button>
+            <Button variant="primary" size="md" type="submit" loading={creatingUser}>
+              Create user
+            </Button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 };
