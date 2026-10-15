@@ -15,7 +15,7 @@ import { SkeletonRow } from './components/ui/Skeleton';
 import { SeatBar } from './components/ui/SeatBar';
 import { Course, Notification } from './types';
 import { api } from './services/api';
-import { SYSTEM_METRICS } from './config/stats';
+import { SYSTEM_METRICS, TEST_SUITE_SUMMARY } from './config/stats';
 import {
   RotateCw, GraduationCap, BookOpen, ShieldCheck,
   CheckCircle2, ChevronDown, ChevronUp, ArrowRight,
@@ -212,11 +212,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuth, isDark, onToggleD
           </div>
 
           <div className="flex items-center space-x-3 sm:space-x-4">
+            {/* Same constant from stats config used in navbar */}
             <div className="hidden md:flex items-center space-x-2 text-xs text-muted dark:text-slate-400 px-3 py-1.5 rounded-full bg-paper dark:bg-slate-800 border border-line dark:border-slate-700">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <span className="font-semibold text-ink dark:text-slate-200">System Online</span>
               <span>&bull;</span>
-              <span className="tabular-nums font-mono">39/39 Tests Passing</span>
+              <span className="tabular-nums font-mono">{TEST_SUITE_SUMMARY}</span>
             </div>
 
             {/* Dark Mode Toggle */}
@@ -229,11 +230,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuth, isDark, onToggleD
               {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-600" />}
             </button>
 
+            {/* Ghost / Outline style in dark mode */}
             <Button
               variant="secondary"
               size="sm"
               onClick={onOpenAuth}
-              className="font-medium shadow-sm focus-visible:ring-2 focus-visible:ring-accent"
+              className="font-medium shadow-sm dark:bg-transparent dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-white focus-visible:ring-2 focus-visible:ring-accent"
               aria-label="Open custom sign in dialog"
             >
               Custom sign in
@@ -247,16 +249,18 @@ const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuth, isDark, onToggleD
         
         {/* HERO: Centered, Clean Gradient, Tight 2-Line Subtext & Live Anchor */}
         <div className="text-center max-w-3xl mx-auto space-y-5">
+          {/* Top Pill updated to Pure Java · Zero-ORM */}
           <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white dark:bg-slate-800/90 border border-line dark:border-slate-700 shadow-sm text-xs text-muted dark:text-slate-300 font-medium">
             <span className="w-2 h-2 rounded-full bg-blue-600 dark:bg-blue-400 animate-pulse" />
-            <span className="font-semibold text-ink dark:text-slate-200">Pure Java Enterprise Architecture</span>
+            <span className="font-semibold text-ink dark:text-slate-200">Pure Java &bull; Zero-ORM</span>
             <span>&bull;</span>
-            <span>Zero-ORM HikariCP & JDBC</span>
+            <span>HikariCP & JDBC</span>
           </div>
 
+          {/* Headline with lighter gradient in dark mode */}
           <h1 className="text-3xl sm:text-5xl lg:text-[52px] font-sans font-bold tracking-tight text-ink dark:text-white leading-[1.12]">
             Academic Learning Platform, <br />
-            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
               Engineered for Concurrency.
             </span>
           </h1>
@@ -266,7 +270,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuth, isDark, onToggleD
             Multi-role academic platform powered by Jakarta Servlets 6.0 and MySQL InnoDB (H2 in demo mode). Eliminates seat drift with atomic transactions and auto-grades assessments.
           </p>
 
-          {/* Live Seat Counter Visual Anchor */}
+          {/* Live Seat Counter Visual Anchor: "Live from DB" */}
           <div className="flex items-center justify-center pt-1">
             <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-white dark:bg-slate-800/90 border border-blue-200/80 dark:border-blue-900/60 shadow-sm text-xs font-mono">
               <span className="relative flex h-2 w-2">
@@ -279,7 +283,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuth, isDark, onToggleD
                 {cs301SeatsLeft} seats left
               </span>
               <span className="text-[10px] font-sans font-medium px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200/60 dark:border-blue-800">
-                Live Lock Anchor
+                Live from DB
               </span>
             </div>
           </div>
@@ -290,8 +294,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuth, isDark, onToggleD
               Click any demo account to test live workflows immediately:
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-left">
-              {/* Student Persona: Blue top border & hover lift */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-left items-stretch">
+              {/* Student Persona: Blue top border, hover lift, high-contrast email chip */}
               <div
                 onClick={() => handleDemoLogin('grace@student.lms.edu', 'Student')}
                 className="group relative p-4 rounded-xl border border-line dark:border-slate-800 border-t-4 border-t-blue-500 bg-surface dark:bg-slate-900 hover:-translate-y-1 hover:shadow-lg cursor-pointer transition-all duration-200 space-y-2.5 flex flex-col justify-between"
@@ -309,7 +313,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuth, isDark, onToggleD
                     <h3 className="text-sm font-bold text-ink dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                       Grace Brewster
                     </h3>
-                    <div className="mt-1 text-[11px] font-mono text-muted dark:text-slate-400 bg-paper dark:bg-slate-800/80 px-2 py-0.5 rounded border border-line dark:border-slate-700 select-all w-fit">
+                    <div className="mt-1 text-[11px] font-mono text-slate-700 dark:text-slate-300 bg-paper dark:bg-slate-800 px-2 py-0.5 rounded border border-line dark:border-slate-700 select-all w-fit font-medium">
                       grace@student.lms.edu
                     </div>
                     <p className="text-xs text-muted dark:text-slate-400 leading-snug mt-1.5">
@@ -332,7 +336,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuth, isDark, onToggleD
                 </button>
               </div>
 
-              {/* Instructor Persona: Green top border & hover lift */}
+              {/* Instructor Persona: Green top border, hover lift, high-contrast email chip */}
               <div
                 onClick={() => handleDemoLogin('ada@lms.edu', 'Instructor')}
                 className="group relative p-4 rounded-xl border border-line dark:border-slate-800 border-t-4 border-t-emerald-500 bg-surface dark:bg-slate-900 hover:-translate-y-1 hover:shadow-lg cursor-pointer transition-all duration-200 space-y-2.5 flex flex-col justify-between"
@@ -350,7 +354,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuth, isDark, onToggleD
                     <h3 className="text-sm font-bold text-ink dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
                       Prof. Ada Lovelace
                     </h3>
-                    <div className="mt-1 text-[11px] font-mono text-muted dark:text-slate-400 bg-paper dark:bg-slate-800/80 px-2 py-0.5 rounded border border-line dark:border-slate-700 select-all w-fit">
+                    <div className="mt-1 text-[11px] font-mono text-slate-700 dark:text-slate-300 bg-paper dark:bg-slate-800 px-2 py-0.5 rounded border border-line dark:border-slate-700 select-all w-fit font-medium">
                       ada@lms.edu
                     </div>
                     <p className="text-xs text-muted dark:text-slate-400 leading-snug mt-1.5">
@@ -373,7 +377,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuth, isDark, onToggleD
                 </button>
               </div>
 
-              {/* Admin Persona: Purple top border & hover lift */}
+              {/* Admin Persona: Purple top border, hover lift, high-contrast email chip */}
               <div
                 onClick={() => handleDemoLogin('admin@lms.edu', 'Admin')}
                 className="group relative p-4 rounded-xl border border-line dark:border-slate-800 border-t-4 border-t-purple-500 bg-surface dark:bg-slate-900 hover:-translate-y-1 hover:shadow-lg cursor-pointer transition-all duration-200 space-y-2.5 flex flex-col justify-between"
@@ -391,7 +395,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuth, isDark, onToggleD
                     <h3 className="text-sm font-bold text-ink dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
                       Alan Turing
                     </h3>
-                    <div className="mt-1 text-[11px] font-mono text-muted dark:text-slate-400 bg-paper dark:bg-slate-800/80 px-2 py-0.5 rounded border border-line dark:border-slate-700 select-all w-fit">
+                    <div className="mt-1 text-[11px] font-mono text-slate-700 dark:text-slate-300 bg-paper dark:bg-slate-800 px-2 py-0.5 rounded border border-line dark:border-slate-700 select-all w-fit font-medium">
                       admin@lms.edu
                     </div>
                     <p className="text-xs text-muted dark:text-slate-400 leading-snug mt-1.5">
@@ -609,7 +613,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuth, isDark, onToggleD
                               </span>
                             </div>
 
-                            {/* Card Content with Enhanced SeatBar */}
+                            {/* Card Content with Seats-Left SeatBar */}
                             <div className="p-5 space-y-3">
                               <h4 className="font-bold text-sm text-ink dark:text-white leading-snug group-hover:text-accent dark:group-hover:text-blue-400 transition-colors">
                                 {c.title}
@@ -622,7 +626,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuth, isDark, onToggleD
                                 <span>Instructor: <strong className="text-ink dark:text-slate-200 font-semibold">{c.instructorName || 'Faculty'}</strong></span>
                               </div>
 
-                              {/* Availability colored SeatBar with bold seats-left */}
+                              {/* Availability colored SeatBar showing seats left */}
                               <SeatBar enrolled={c.enrolledCount} capacity={c.capacity} />
                             </div>
                           </div>
@@ -833,7 +837,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuth, isDark, onToggleD
                 </p>
                 {getMetricIcon(metric.id)}
               </div>
-              <p className="text-3xl font-extrabold text-ink dark:text-white tabular-nums">
+              <p className="text-2xl sm:text-3xl font-extrabold text-ink dark:text-white tabular-nums">
                 {metric.value ?? '—'}
               </p>
               <p className="text-xs text-muted dark:text-slate-400 font-medium">
@@ -847,8 +851,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuth, isDark, onToggleD
         <div className="space-y-6 pt-2">
           <div className="text-center max-w-xl mx-auto space-y-1.5">
             <h2 className="text-2xl sm:text-3xl font-bold text-ink dark:text-white">Built for every academic role.</h2>
+            {/* Updated copy: role-based access filters */}
             <p className="text-xs sm:text-sm text-muted dark:text-slate-400">
-              Dedicated interfaces with polymorphic role-based security filters and full session isolation.
+              Dedicated interfaces with role-based access filters and full session isolation.
             </p>
           </div>
 
@@ -914,8 +919,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuth, isDark, onToggleD
               </div>
               <div>
                 <h3 className="text-base font-bold text-ink dark:text-white">Platform Governance</h3>
+                {/* Updated copy: audit logs */}
                 <p className="text-xs text-muted dark:text-slate-400 leading-relaxed mt-1">
-                  Full user directory governance, live database engine monitoring, and immutable transactional audit logs.
+                  Full user directory governance, live database engine monitoring, and audit logs.
                 </p>
               </div>
               <ul className="text-xs text-muted dark:text-slate-300 space-y-2.5 pt-3 border-t border-line dark:border-slate-800">

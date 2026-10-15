@@ -18,18 +18,20 @@ export const SeatBar: React.FC<SeatBarProps> = ({
   const safeEnrolled = enrolled ?? 0;
   const safeCapacity = capacity ?? 0;
   const freeSeats = Math.max(0, safeCapacity - safeEnrolled);
+
+  // Bar fill represents seats LEFT (not seats taken)
   const freePercent = safeCapacity > 0 ? (freeSeats / safeCapacity) * 100 : 0;
   const filledPercent = safeCapacity > 0 ? Math.min(100, Math.round((safeEnrolled / safeCapacity) * 100)) : 0;
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setAnimatedPercent(filledPercent);
+      setAnimatedPercent(freePercent);
     }, 40);
     return () => clearTimeout(timer);
-  }, [filledPercent]);
+  }, [freePercent]);
 
-  // Availability coloring:
-  // green > 50% free, amber 20-50% free, red < 20% free
+  // Availability coloring based on percentage of seats LEFT:
+  // Green above 50% free, amber 20-50% free, red below 20% free
   const barColor =
     freePercent > 50
       ? 'bg-emerald-500'

@@ -27,8 +27,8 @@ export const Button: React.FC<ButtonProps> = ({
 
   const variantClasses = {
     primary: 'bg-accent text-white hover:bg-[#243CA8] active:bg-[#1C2230] border border-transparent shadow-none',
-    secondary: 'bg-surface text-ink hover:bg-paper active:bg-line border border-line shadow-none',
-    ghost: 'bg-transparent text-muted hover:text-ink hover:bg-paper active:bg-line border border-transparent',
+    secondary: 'bg-surface text-ink hover:bg-paper active:bg-line border border-line shadow-none dark:bg-transparent dark:text-slate-200 dark:border-slate-700 dark:hover:bg-slate-800/80 dark:hover:text-white',
+    ghost: 'bg-transparent text-muted hover:text-ink hover:bg-paper active:bg-line border border-transparent dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800/60',
     danger: 'bg-status-full text-white hover:opacity-90 active:opacity-100 border border-transparent',
   }[variant];
 
