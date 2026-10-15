@@ -6,10 +6,28 @@
   <title>Online LMS - Review 1 Academic Presentation</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
+    @page {
+      size: 16in 9in;
+      margin: 0;
+    }
     @media print {
+      body {
+        margin: 0 !important;
+        padding: 0 !important;
+        background-color: #020617 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .pt-16 {
+        padding-top: 0 !important;
+      }
       .slide {
         page-break-after: always;
+        page-break-inside: avoid;
         height: 100vh !important;
+        max-height: 100vh !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
       }
       .no-print {
         display: none !important;
@@ -20,6 +38,7 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      box-sizing: border-box;
     }
   </style>
 </head>
