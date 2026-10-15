@@ -1,48 +1,58 @@
 import React, { useEffect, useState } from 'react';
 
 export interface SeatBarProps {
-  enrolled: number;
-  capacity: number;
+  enrolled?: number;
+  capacity?: number;
   showText?: boolean;
   className?: string;
 }
 
 export const SeatBar: React.FC<SeatBarProps> = ({
-  enrolled,
-  capacity,
+  enrolled = 0,
+  capacity = 0,
   showText = true,
   className = '',
 }) => {
-  const [animatedWidth, setAnimatedWidth] = useState(0);
+  const [animatedPercent, setAnimatedPercent] = useState(0);
 
-  const ratio = capacity > 0 ? Math.min(1, Math.max(0, enrolled / capacity)) : 0;
-  const percentage = Math.round(ratio * 100);
+  const safeEnrolled = enrolled ?? 0;
+  const safeCapacity = capacity ?? 0;
+  const freeSeats = Math.max(0, safeCapacity - safeEnrolled);
+  const freePercent = safeCapacity > 0 ? (freeSeats / safeCapacity) * 100 : 0;
+  const filledPercent = safeCapacity > 0 ? Math.min(100, Math.round((safeEnrolled / safeCapacity) * 100)) : 0;
 
   useEffect(() => {
-    // Trigger one-time animation on mount / load
     const timer = setTimeout(() => {
-      setAnimatedWidth(percentage);
-    }, 50);
+      setAnimatedPercent(filledPercent);
+    }, 40);
     return () => clearTimeout(timer);
-  }, [percentage]);
+  }, [filledPercent]);
 
+  // Availability coloring:
+  // green > 50% free, amber 20-50% free, red < 20% free
   const barColor =
-    ratio >= 1.0 ? 'bg-status-full' : ratio >= 0.7 ? 'bg-status-filling' : 'bg-status-open';
+    freePercent > 50
+      ? 'bg-emerald-500'
+      : freePercent >= 20
+      ? 'bg-amber-500'
+      : 'bg-rose-500';
 
   return (
     <div className={`space-y-1.5 ${className}`}>
-      <div className="w-full h-1.5 bg-line rounded-full overflow-hidden">
+      <div className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
         <div
           className={`h-full ${barColor} rounded-full transition-all duration-500 ease-out motion-reduce:transition-none`}
-          style={{ width: `${animatedWidth}%` }}
+          style={{ width: `${animatedPercent}%` }}
         />
       </div>
       {showText && (
-        <div className="flex justify-between items-center text-xs text-muted tabular-nums">
+        <div className="flex justify-between items-center text-xs text-muted dark:text-slate-400 tabular-nums">
+          <strong className="font-bold text-ink dark:text-slate-100 transition-colors">
+            {freeSeats} seats left
+          </strong>
           <span>
-            {enrolled} of {capacity} seats
+            {safeEnrolled} of {safeCapacity} ({filledPercent}%)
           </span>
-          <span>{percentage}%</span>
         </div>
       )}
     </div>

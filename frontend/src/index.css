@@ -16,6 +16,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+html.dark body {
+  color: #F1F5F9;
+  background-color: #0B0F19;
+}
+
 /* Tabular numerals for counts, metrics, codes, and dates */
 .tabular-nums {
   font-variant-numeric: tabular-nums;
@@ -33,14 +38,25 @@ body {
   background: #DCE0E7;
   border-radius: 3px;
 }
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
 ::-webkit-scrollbar-thumb:hover {
   background: #5B6475;
 }
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #64748B;
+}
 
-/* Subtle engineering grid background texture */
+/* Engineering grid background texture */
 .bg-grid-pattern {
   background-color: #F5F6F8;
   background-image: radial-gradient(#D5D9E2 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
+.dark .bg-grid-pattern {
+  background-color: #0B0F19;
+  background-image: radial-gradient(#1E293B 1px, transparent 1px);
+  background-size: 24px 24px;
+}
