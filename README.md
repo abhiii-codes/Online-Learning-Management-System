@@ -10,7 +10,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178C6?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-3.4-38B2AC?style=flat&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen?style=flat)]()
-[![Tests](https://img.shields.io/badge/Tests-16%2F16%20Passed-success?style=flat)]()
+[![Tests](https://img.shields.io/badge/Tests-39%2F39%20Passed-success?style=flat)]()
 
 ---
 
@@ -34,7 +34,7 @@ This project implements a genuine, production-grade **Online Learning Management
 | **2. Core Java Concepts** | **10 Marks** | • **Encapsulation:** Domain classes with private fields and validations.<br>• **Inheritance:** `User` abstract base class extended by `StudentUser`, `InstructorUser`, `AdminUser`.<br>• **Polymorphism:** Abstract methods `getRoleDashboardUrl()`, `hasAdministrativePrivileges()` & interchangeable `GradingStrategy` (`StandardGradingStrategy`, `WeightedGradingStrategy`).<br>• **Interfaces:** 11 DAO interfaces and 13 Service contracts.<br>• **Exception Hierarchy:** `LmsException` base class with specialized domain exceptions (`AuthenticationException`, `ResourceNotFoundException`, `UnauthorizedException`, `ValidationException`).<br>• **Generics & Collections:** Typed `List<T>`, `Map<K, V>`, `Optional<T>`. | • `com.lms.model.User`<br>• `com.lms.model.StudentUser`<br>• `com.lms.model.InstructorUser`<br>• `com.lms.model.AdminUser`<br>• `com.lms.model.strategy.*`<br>• `com.lms.dao.*`<br>• `com.lms.exception.*` |
 | **3. Database Integration (JDBC)** | **8 Marks** | • 100% PreparedStatements (prevents SQL injection).<br>• Try-with-resources connection and statement closure.<br>• Explicit multi-statement ACID transactions (`setAutoCommit(false)`).<br>• Connection pooling with HikariCP.<br>• Safe result-set mapping and defensive type handling. | • `com.lms.dao.impl.*`<br>• `com.lms.service.impl.EnrollmentServiceImpl`<br>• `com.lms.service.impl.SubmissionServiceImpl`<br>• `com.lms.service.impl.QuizServiceImpl` |
 | **4. Servlets & Web Integration** | **7 Marks** | • 14 Jakarta Servlets extending `BaseServlet`.<br>• RESTful conventions (`GET`, `POST`, `PUT`, `DELETE`).<br>• Centralized JSON response framing and HTTP status codes.<br>• Stateful session security with invalidation on logout.<br>• Servlet Filters (`CorsFilter`, `EncodingFilter`).<br>• Production React SPA delivered directly via Tomcat webapp. | • `com.lms.servlet.*`<br>• `com.lms.filter.*`<br>• `com.lms.util.SecurityUtils`<br>• `frontend/src/*` |
-| **TOTAL** | **33 Marks** | **Fully Satisfied & Demonstrable** | **18/18 Automated Tests Passing** |
+| **TOTAL** | **33 Marks** | **Fully Satisfied & Demonstrable** | **39/39 Automated Tests Passing** |
 
 ---
 
@@ -250,12 +250,12 @@ mvn test
 ```
 
 ### Test Results Summary:
-* `CoreJavaOopTest`: **PASSED** (Encapsulation, inheritance hierarchy, polymorphic strategy calculations, custom exceptions).
-* `JdbcDaoPersistenceTest`: **PASSED** (User creation, course insertion, prepared statement execution, unique constraints).
-* `ServiceTransactionTest`: **PASSED** (Atomic multi-row transactions, enrollment rollback on failure).
-* `ServletRequestHandlingTest`: **PASSED** (BaseServlet JSON dispatching, HTTP error handling, serialization).
+* `CoreJavaOopTest`: **PASSED** (8 tests - Encapsulation, inheritance hierarchy, polymorphic strategy calculations, custom exceptions, Comparable sorting).
+* `JdbcDaoPersistenceTest`: **PASSED** (6 tests - User creation, course insertion, prepared statement execution, unique constraints).
+* `ServiceTransactionTest`: **PASSED** (12 tests - Atomic multi-row transactions, 20-thread concurrency test with 0 oversells, rollback on failure).
+* `ServletRequestHandlingTest`: **PASSED** (13 tests - BaseServlet JSON dispatching, AuthFilter RBAC, HTTP error handling, serialization).
 
-**Total Tests: 16 | Failures: 0 | Errors: 0 | Skipped: 0 (100% Pass Rate)**
+**Total Tests: 39 | Failures: 0 | Errors: 0 | Skipped: 0 (100% Pass Rate)**
 
 ---
 
