@@ -2,7 +2,7 @@
 title Online LMS - Jakarta Servlets & Tomcat 10
 echo ======================================================================
 echo    ONLINE LEARNING MANAGEMENT SYSTEM (LMS)
-echo    3rd-Semester CSE Java Web-Based Project (Rubric: 33 Marks)
+echo    Pure Jakarta Servlets 6.0 & HikariCP & MySQL / H2
 echo ======================================================================
 echo.
 
@@ -24,14 +24,14 @@ if %ERRORLEVEL% neq 0 (
 )
 
 echo [INFO] Starting Tomcat 10 Embedded Web Server on Port 8080...
-echo [INFO] Web Application URL: http://localhost:8080/index.html
+echo [INFO] Web Application URL: http://localhost:8080
 echo.
 echo Press Ctrl+C in this terminal when you want to stop the server.
 echo ======================================================================
 echo.
 
 :: Automatically open browser after 3 seconds in the background
-start "" /b cmd /c "timeout /t 3 /nobreak >nul & start http://localhost:8080/index.html"
+start "" /b cmd /c "timeout /t 3 /nobreak >nul & start http://localhost:8080"
 
 :: Execute Embedded Tomcat Server
 call %MAVEN_CMD% exec:java
