@@ -36,3 +36,11 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #5B6475;
 }
+
+/* Subtle engineering grid background texture */
+.bg-grid-pattern {
+  background-color: #F5F6F8;
+  background-image: radial-gradient(#D5D9E2 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
