@@ -162,10 +162,30 @@ export const AppShell: React.FC<AppShellProps> = ({
               )}
             </button>
 
-            <div className="hidden sm:flex items-center space-x-2 pl-3 border-l border-line">
+            <div className="hidden sm:flex items-center space-x-3 pl-3 border-l border-line">
               <span className="text-xs text-ink font-medium">{user.name}</span>
               <Badge variant="neutral">{roleLabel}</Badge>
+              <button
+                type="button"
+                onClick={logout}
+                className="inline-flex items-center space-x-1.5 px-2 py-1 text-xs font-medium text-muted hover:text-status-full hover:bg-paper rounded-control border border-line transition-colors ml-1"
+                title="Sign out of account"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                <span>Sign out</span>
+              </button>
             </div>
+
+            {/* Mobile Sign Out button */}
+            <button
+              type="button"
+              onClick={logout}
+              className="sm:hidden p-1.5 text-muted hover:text-status-full rounded-control border border-line bg-surface transition-colors"
+              title="Sign out of account"
+              aria-label="Sign out"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
           </div>
         </div>
       </header>
