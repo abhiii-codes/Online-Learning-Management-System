@@ -67,9 +67,9 @@ function addHeader(slide, title, category) {
         { text: '• Problem Understanding & Design (8M)   • Core Java Concepts (10M)   • Database & JDBC (8M)   • Servlets & Web (7M)', options: { color: TEXT_LIGHT, fontSize: 13 } }
     ], { x: 1.5, y: 4.3, w: 10.2, h: 1.0 });
 
-    slide.addText('Team: 3rd Sem CSE Batch | Technologies: Java 17+, Jakarta Servlets 6.0, Tomcat 10.1, JDBC, HikariCP, React 18', {
+    slide.addText('Team - Abhinav Kumar Singh (Leader), Akash Yadav(Member). | Java 17+, Jakarta Servlets 6.0, JDBC, Tomcat 10.1, React 18', {
         x: 1.2, y: 6.2, w: 10.5, h: 0.4,
-        fontSize: 11, fontFace: 'Arial', color: TEXT_MUTED
+        fontSize: 12, fontFace: 'Arial', color: ACCENT_GREEN, bold: true
     });
 }
 
