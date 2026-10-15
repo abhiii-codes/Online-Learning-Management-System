@@ -471,7 +471,7 @@ function addHeader(slide, title, category) {
     const statusCards = [
         { title: 'Backend Engine & DAOs', stat: '100% Complete', desc: '14 Servlets, 13 Services, 11 DAOs fully operational with JDBC.', col: ACCENT_GREEN, x: 0.8, y: 1.8 },
         { title: 'Frontend Dashboards', stat: '100% Complete', desc: 'React 18 + TS SPA with Student, Instructor, & Admin portals.', col: ACCENT_GREEN, x: 4.8, y: 1.8 },
-        { title: 'Automated Tests', stat: '19/19 Passed', desc: 'JUnit 5 suites verifying OOP, DAOs, Deadlock-Free Transactions, and Servlets.', col: ACCENT_GREEN, x: 8.8, y: 1.8 },
+        { title: 'Automated Tests', stat: '39/39 Passed', desc: 'JUnit 5 suites verifying OOP, DAOs, Deadlock-Free Transactions, and Servlets.', col: ACCENT_GREEN, x: 8.8, y: 1.8 },
         { title: 'Embedded Web Server', stat: 'Running (Port 8080)', desc: 'Tomcat 10.1 web container active and delivering HTTP 200.', col: ACCENT_BLUE, x: 0.8, y: 4.3 },
         { title: 'Deployable Artifact', stat: 'online-lms.war', desc: 'Standard Jakarta WAR compiled and ready for Tomcat deployment.', col: ACCENT_BLUE, x: 4.8, y: 4.3 },
         { title: 'Academic Rubric Match', stat: '33/33 Marks', desc: 'Full alignment with all four 3rd-Semester CSE project criteria.', col: 'F59E0B', x: 8.8, y: 4.3 }
@@ -503,24 +503,24 @@ function addHeader(slide, title, category) {
 
     const tests = [
         {
-            suite: 'CoreJavaOopTest (4 Tests)',
+            suite: 'CoreJavaOopTest (8 Tests)',
             result: 'PASSED',
-            desc: 'Verifies encapsulation accessors, Student/Instructor/Admin inheritance, runtime polymorphic strategy calculations, and custom LmsException behaviors.'
+            desc: 'Verifies encapsulation accessors, Student/Instructor/Admin inheritance, runtime polymorphic strategy calculations, Comparable, and custom LmsException behaviors.'
         },
         {
-            suite: 'JdbcDaoPersistenceTest (4 Tests)',
+            suite: 'JdbcDaoPersistenceTest (6 Tests)',
             result: 'PASSED',
             desc: 'Validates direct JDBC PreparedStatement execution, user password hash lookups, course insertions, and SQL unique constraint validations.'
         },
         {
-            suite: 'ServiceTransactionTest (6 Tests)',
+            suite: 'ServiceTransactionTest (12 Tests)',
             result: 'PASSED',
-            desc: 'Verifies TransactionManager execution, rollback suppression, conditional capacity enforcement (CourseFullException), and symmetric dropCourse.'
+            desc: 'Verifies TransactionManager execution, 20-thread concurrency test (0 oversells), rollback suppression, capacity enforcement, and symmetric dropCourse.'
         },
         {
-            suite: 'ServletRequestHandlingTest (4 Tests)',
+            suite: 'ServletRequestHandlingTest (13 Tests)',
             result: 'PASSED',
-            desc: 'Tests BaseServlet JSON response dispatching, standard HTTP response envelopes, and error handling for unauthorized requests.'
+            desc: 'Tests BaseServlet JSON response dispatching, AuthFilter role-based access control, and error handling for unauthorized requests (400, 401, 403, 404, 409, 415).'
         }
     ];
 
@@ -579,7 +579,7 @@ function addHeader(slide, title, category) {
         { text: '• Full Rubric Satisfaction: ', options: { bold: true, color: TEXT_LIGHT } },
         { text: 'All 33 marks across Problem Understanding, Core Java, JDBC, and Servlets are demonstrated.\n\n', options: { color: TEXT_MUTED } },
         { text: '• Tested & Verifiable: ', options: { bold: true, color: TEXT_LIGHT } },
-        { text: 'Application is currently live on port 8080 and backed by 19 passing automated tests.\n\n', options: { color: TEXT_MUTED } },
+        { text: 'Application is currently live on port 8080 and backed by 39 passing automated tests.\n\n', options: { color: TEXT_MUTED } },
         { text: '• Complete Academic Deliverables: ', options: { bold: true, color: TEXT_LIGHT } },
         { text: 'Comprehensive README, System Architecture, ERD, Setup Guide, Viva Guide, and Presentation Deck provided.\n\n', options: { color: TEXT_MUTED } },
         { text: 'Ready for Review 1 Committee Evaluation & Viva Defense.', options: { bold: true, color: ACCENT_GREEN } }
