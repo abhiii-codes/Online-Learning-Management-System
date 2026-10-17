@@ -41,7 +41,7 @@ public class ServletRequestHandlingTest {
         when(req.getPathInfo()).thenReturn("/login");
         when(req.getSession(true)).thenReturn(session);
 
-        String jsonPayload = "{\"email\":\"ada@lms.edu\",\"password\":\"password123\"}";
+        String jsonPayload = "{\"email\":\"aditya@lms.edu\",\"password\":\"password123\"}";
         ByteArrayInputStream in = new ByteArrayInputStream(jsonPayload.getBytes(StandardCharsets.UTF_8));
         when(req.getInputStream()).thenReturn(new DelegatingServletInputStream(in));
 
@@ -55,7 +55,7 @@ public class ServletRequestHandlingTest {
 
         String jsonResponse = out.toString(StandardCharsets.UTF_8);
         assertTrue(jsonResponse.contains("\"success\":true"), "Response must indicate success");
-        assertTrue(jsonResponse.contains("Prof. Ada Lovelace"), "Response must contain user profile");
+        assertTrue(jsonResponse.contains("Prof. Aditya Awasthi"), "Response must contain user profile");
     }
 
     @Test
@@ -69,7 +69,7 @@ public class ServletRequestHandlingTest {
         when(req.getMethod()).thenReturn("POST");
         when(req.getPathInfo()).thenReturn("/login");
 
-        String jsonPayload = "{\"email\":\"ada@lms.edu\",\"password\":\"wrongpassword\"}";
+        String jsonPayload = "{\"email\":\"aditya@lms.edu\",\"password\":\"wrongpassword\"}";
         ByteArrayInputStream in = new ByteArrayInputStream(jsonPayload.getBytes(StandardCharsets.UTF_8));
         when(req.getInputStream()).thenReturn(new DelegatingServletInputStream(in));
 
@@ -290,7 +290,7 @@ public class ServletRequestHandlingTest {
         HttpSession session = mock(HttpSession.class);
 
         com.lms.model.StudentUser student = new com.lms.model.StudentUser(
-                4L, "Grace Hopper", "grace@student.lms.edu", "hash", "Bio", com.lms.model.UserStatus.ACTIVE);
+                4L, "Abhinav Singh", "abhinav@student.lms.edu", "hash", "Bio", com.lms.model.UserStatus.ACTIVE);
 
         when(req.getMethod()).thenReturn("GET");
         when(req.getPathInfo()).thenReturn("/1");
@@ -317,9 +317,9 @@ public class ServletRequestHandlingTest {
         HttpServletResponse resp = mock(HttpServletResponse.class);
         HttpSession session = mock(HttpSession.class);
 
-        // Student 6 (Katherine Johnson) is enrolled in Course 2, but NOT enrolled in Course 1 (Quiz 1)
+        // Student 6 (Priya Patel) is enrolled in Course 2, but NOT enrolled in Course 1 (Quiz 1)
         com.lms.model.StudentUser student = new com.lms.model.StudentUser(
-                6L, "Katherine Johnson", "katherine@student.lms.edu", "hash", "Bio", com.lms.model.UserStatus.ACTIVE);
+                6L, "Priya Patel", "priya@student.lms.edu", "hash", "Bio", com.lms.model.UserStatus.ACTIVE);
 
         when(req.getMethod()).thenReturn("POST");
         when(req.getPathInfo()).thenReturn("/1/submit");

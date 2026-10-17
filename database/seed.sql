@@ -6,12 +6,12 @@
 
 -- 1. SEED USERS (Admin, Instructors, Students)
 INSERT INTO users (id, name, email, password_hash, role, bio, status) VALUES
-(1, 'Dr. Alan Turing', 'admin@lms.edu', '$2a$10$e8m4aF4ZtS0F4mF8Z0xKCe3ZkUfX7rM94zUeN9l6XjYV123abc456', 'ADMIN', 'System Administrator and CSE Department Head.', 'ACTIVE'),
-(2, 'Prof. Ada Lovelace', 'ada@lms.edu', '$2a$10$e8m4aF4ZtS0F4mF8Z0xKCe3ZkUfX7rM94zUeN9l6XjYV123abc456', 'INSTRUCTOR', 'Professor of Object-Oriented Software Engineering and Java Systems.', 'ACTIVE'),
-(3, 'Dr. Edgar Codd', 'codd@lms.edu', '$2a$10$e8m4aF4ZtS0F4mF8Z0xKCe3ZkUfX7rM94zUeN9l6XjYV123abc456', 'INSTRUCTOR', 'Associate Professor specializing in Relational Databases and SQL.', 'ACTIVE'),
-(4, 'Grace Hopper', 'grace@student.lms.edu', '$2a$10$e8m4aF4ZtS0F4mF8Z0xKCe3ZkUfX7rM94zUeN9l6XjYV123abc456', 'STUDENT', '3rd-Semester CSE Student enthusiastic about backend engineering.', 'ACTIVE'),
-(5, 'Linus Torvalds', 'linus@student.lms.edu', '$2a$10$e8m4aF4ZtS0F4mF8Z0xKCe3ZkUfX7rM94zUeN9l6XjYV123abc456', 'STUDENT', 'Undergraduate student interested in OS, concurrency, and architecture.', 'ACTIVE'),
-(6, 'Katherine Johnson', 'katherine@student.lms.edu', '$2a$10$e8m4aF4ZtS0F4mF8Z0xKCe3ZkUfX7rM94zUeN9l6XjYV123abc456', 'STUDENT', 'Student passionate about computational algorithms and data pipelines.', 'ACTIVE')
+(1, 'Virat Kohli', 'admin@lms.edu', '$2a$10$e8m4aF4ZtS0F4mF8Z0xKCe3ZkUfX7rM94zUeN9l6XjYV123abc456', 'ADMIN', 'System Administrator and Academic Governance Lead.', 'ACTIVE'),
+(2, 'Prof. Aditya Awasthi', 'aditya@lms.edu', '$2a$10$e8m4aF4ZtS0F4mF8Z0xKCe3ZkUfX7rM94zUeN9l6XjYV123abc456', 'INSTRUCTOR', 'Professor of Object-Oriented Software Engineering and Java Systems.', 'ACTIVE'),
+(3, 'Dr. Rajesh Sharma', 'rajesh@lms.edu', '$2a$10$e8m4aF4ZtS0F4mF8Z0xKCe3ZkUfX7rM94zUeN9l6XjYV123abc456', 'INSTRUCTOR', 'Associate Professor specializing in Relational Databases and SQL.', 'ACTIVE'),
+(4, 'Abhinav Singh', 'abhinav@student.lms.edu', '$2a$10$e8m4aF4ZtS0F4mF8Z0xKCe3ZkUfX7rM94zUeN9l6XjYV123abc456', 'STUDENT', '3rd-Semester CSE Student enthusiastic about backend engineering.', 'ACTIVE'),
+(5, 'Akash Yadav', 'akash@student.lms.edu', '$2a$10$e8m4aF4ZtS0F4mF8Z0xKCe3ZkUfX7rM94zUeN9l6XjYV123abc456', 'STUDENT', 'Undergraduate student interested in OS, concurrency, and architecture.', 'ACTIVE'),
+(6, 'Priya Patel', 'priya@student.lms.edu', '$2a$10$e8m4aF4ZtS0F4mF8Z0xKCe3ZkUfX7rM94zUeN9l6XjYV123abc456', 'STUDENT', 'Student passionate about computational algorithms and data pipelines.', 'ACTIVE')
 ON DUPLICATE KEY UPDATE name=VALUES(name);
 
 -- 2. SEED COURSES
@@ -95,6 +95,6 @@ INSERT INTO audit_logs (user_id, action, entity_name, entity_id, details, ip_add
 
 -- 12. INITIAL NOTIFICATIONS
 INSERT INTO notifications (user_id, title, message, type) VALUES
-(4, 'Welcome to Online LMS', 'Welcome Grace! You are enrolled in CS-201 and CS-204.', 'INFO'),
+(4, 'Welcome to Online LMS', 'Welcome Abhinav! You are enrolled in CS-201 and CS-204.', 'INFO'),
 (4, 'Grade Published', 'Your submission for Lab 1: Polymorphic Shape Hierarchy has been graded: 95/100.', 'GRADE'),
-(5, 'Course Announcement', 'Welcome Linus! New lesson materials are available in CS-201.', 'INFO');
+(5, 'Course Announcement', 'Welcome Akash! New lesson materials are available in CS-201.', 'INFO');

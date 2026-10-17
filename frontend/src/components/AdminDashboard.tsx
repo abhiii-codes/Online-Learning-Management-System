@@ -500,7 +500,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         <form onSubmit={handleCreateUser} className="space-y-4">
           <Input
             label="Full name"
-            placeholder="Ada Lovelace"
+            placeholder="Aditya Awasthi"
             value={newUser.name}
             onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
             required
@@ -508,7 +508,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           <Input
             label="Email address"
             type="email"
-            placeholder="ada@lms.edu"
+            placeholder="aditya@lms.edu"
             value={newUser.email}
             onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
             required

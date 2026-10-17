@@ -61,7 +61,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               type="button"
               variant="secondary"
               size="sm"
-              onClick={() => fillDemo('grace@student.lms.edu')}
+              onClick={() => fillDemo('abhinav@student.lms.edu')}
             >
               Student
             </Button>
@@ -69,7 +69,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               type="button"
               variant="secondary"
               size="sm"
-              onClick={() => fillDemo('ada@lms.edu')}
+              onClick={() => fillDemo('aditya@lms.edu')}
             >
               Instructor
             </Button>
@@ -96,7 +96,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             <Input
               label="Full name"
               type="text"
-              placeholder="e.g. Grace Hopper"
+              placeholder="e.g. Abhinav Singh"
               value={name}
               onChange={(e) => setName(e.target.value)}
               disabled={submitting}

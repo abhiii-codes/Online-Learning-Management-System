@@ -19,8 +19,8 @@ public class CoreJavaOopTest {
     @DisplayName("1. Encapsulation: Validates private domain fields and boundary rules")
     void testEncapsulation() {
         StudentUser student = new StudentUser();
-        student.setName(" Ada Lovelace ");
-        assertEquals("Ada Lovelace", student.getName(), "Name should be trimmed");
+        student.setName(" Abhinav Singh ");
+        assertEquals("Abhinav Singh", student.getName(), "Name should be trimmed");
 
         student.setEmail("ADA@EXAMPLE.COM");
         assertEquals("ada@example.com", student.getEmail(), "Email should be lowercase");
@@ -123,9 +123,9 @@ public class CoreJavaOopTest {
     @Test
     @DisplayName("7. Equals & HashCode Contract: Verified on User, Course, and Lesson domain models")
     void testEqualsAndHashCodeContract() {
-        User u1 = new StudentUser(1L, "Ada", "ada@example.com", "hash", "Bio", UserStatus.ACTIVE);
-        User u2 = new StudentUser(2L, "Ada Different Name", "ADA@EXAMPLE.COM", "hash2", "Bio2", UserStatus.ACTIVE);
-        User u3 = new StudentUser(3L, "Grace", "grace@example.com", "hash3", "Bio3", UserStatus.ACTIVE);
+        User u1 = new StudentUser(1L, "Aditya", "aditya@example.com", "hash", "Bio", UserStatus.ACTIVE);
+        User u2 = new StudentUser(2L, "Aditya Different Name", "ADITYA@EXAMPLE.COM", "hash2", "Bio2", UserStatus.ACTIVE);
+        User u3 = new StudentUser(3L, "Abhinav", "abhinav@example.com", "hash3", "Bio3", UserStatus.ACTIVE);
 
         // Symmetry & consistency: email uniqueness defines User equality
         assertEquals(u1, u2, "Users with same email (case-insensitive) must be equal");

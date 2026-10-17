@@ -127,7 +127,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuth, isDark, onToggleD
 
   const handleEnrollClick = async (courseId: number, courseCode: string) => {
     if (!user) {
-      toast('Sign in as student first to enroll in courses. Click Grace Brewster above to test.', 'info');
+      toast('Sign in as student first to enroll in courses. Click Abhinav Singh above to test.', 'info');
       return;
     }
     if (user.role !== 'STUDENT') {
@@ -297,7 +297,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuth, isDark, onToggleD
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-left items-stretch">
               {/* Student Persona: Blue top border, hover lift, high-contrast email chip */}
               <div
-                onClick={() => handleDemoLogin('grace@student.lms.edu', 'Student')}
+                onClick={() => handleDemoLogin('abhinav@student.lms.edu', 'Student')}
                 className="group relative p-4 rounded-xl border border-line dark:border-slate-800 border-t-4 border-t-blue-500 bg-surface dark:bg-slate-900 hover:-translate-y-1 hover:shadow-lg cursor-pointer transition-all duration-200 space-y-2.5 flex flex-col justify-between"
               >
                 <div className="space-y-2.5">
@@ -311,10 +311,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuth, isDark, onToggleD
                   </div>
                   <div>
                     <h3 className="text-sm font-bold text-ink dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                      Grace Brewster
+                      Abhinav Singh
                     </h3>
                     <div className="mt-1 text-[11px] font-mono text-slate-700 dark:text-slate-300 bg-paper dark:bg-slate-800 px-2 py-0.5 rounded border border-line dark:border-slate-700 select-all w-fit font-medium">
-                      grace@student.lms.edu
+                      abhinav@student.lms.edu
                     </div>
                     <p className="text-xs text-muted dark:text-slate-400 leading-snug mt-1.5">
                       Browse courses, read lessons, take quizzes & track grades.
@@ -326,9 +326,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuth, isDark, onToggleD
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleDemoLogin('grace@student.lms.edu', 'Student');
+                    handleDemoLogin('abhinav@student.lms.edu', 'Student');
                   }}
-                  aria-label="Launch Student Portal as Grace Brewster"
+                  aria-label="Launch Student Portal as Abhinav Singh"
                   className="w-full mt-3 py-2 px-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs flex items-center justify-center space-x-1.5 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900 focus-visible:outline-none transition-colors"
                 >
                   <span>Launch Student Portal</span>
@@ -338,7 +338,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuth, isDark, onToggleD
 
               {/* Instructor Persona: Green top border, hover lift, high-contrast email chip */}
               <div
-                onClick={() => handleDemoLogin('ada@lms.edu', 'Instructor')}
+                onClick={() => handleDemoLogin('aditya@lms.edu', 'Instructor')}
                 className="group relative p-4 rounded-xl border border-line dark:border-slate-800 border-t-4 border-t-emerald-500 bg-surface dark:bg-slate-900 hover:-translate-y-1 hover:shadow-lg cursor-pointer transition-all duration-200 space-y-2.5 flex flex-col justify-between"
               >
                 <div className="space-y-2.5">
@@ -352,10 +352,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuth, isDark, onToggleD
                   </div>
                   <div>
                     <h3 className="text-sm font-bold text-ink dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
-                      Prof. Ada Lovelace
+                      Prof. Aditya Awasthi
                     </h3>
                     <div className="mt-1 text-[11px] font-mono text-slate-700 dark:text-slate-300 bg-paper dark:bg-slate-800 px-2 py-0.5 rounded border border-line dark:border-slate-700 select-all w-fit font-medium">
-                      ada@lms.edu
+                      aditya@lms.edu
                     </div>
                     <p className="text-xs text-muted dark:text-slate-400 leading-snug mt-1.5">
                       Author modules, create quizzes, and evaluate submissions.
@@ -367,9 +367,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuth, isDark, onToggleD
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleDemoLogin('ada@lms.edu', 'Instructor');
+                    handleDemoLogin('aditya@lms.edu', 'Instructor');
                   }}
-                  aria-label="Launch Instructor Studio as Ada Lovelace"
+                  aria-label="Launch Instructor Studio as Aditya Awasthi"
                   className="w-full mt-3 py-2 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-xs flex items-center justify-center space-x-1.5 focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900 focus-visible:outline-none transition-colors"
                 >
                   <span>Launch Instructor Studio</span>
@@ -393,7 +393,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuth, isDark, onToggleD
                   </div>
                   <div>
                     <h3 className="text-sm font-bold text-ink dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
-                      Alan Turing
+                      Virat Kohli
                     </h3>
                     <div className="mt-1 text-[11px] font-mono text-slate-700 dark:text-slate-300 bg-paper dark:bg-slate-800 px-2 py-0.5 rounded border border-line dark:border-slate-700 select-all w-fit font-medium">
                       admin@lms.edu
@@ -410,7 +410,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuth, isDark, onToggleD
                     e.stopPropagation();
                     handleDemoLogin('admin@lms.edu', 'Admin');
                   }}
-                  aria-label="Launch Admin Console as Alan Turing"
+                  aria-label="Launch Admin Console as Virat Kohli"
                   className="w-full mt-3 py-2 px-3 rounded-lg bg-purple-600 hover:bg-purple-700 text-white font-medium text-xs flex items-center justify-center space-x-1.5 focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900 focus-visible:outline-none transition-colors"
                 >
                   <span>Launch Admin Console</span>
@@ -756,7 +756,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuth, isDark, onToggleD
 
                 <div className="p-4 rounded-xl bg-paper/60 dark:bg-slate-800/60 border border-line dark:border-slate-700 space-y-3">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="font-bold text-ink dark:text-white">Student: Grace Brewster (#2)</span>
+                    <span className="font-bold text-ink dark:text-white">Student: Abhinav Singh (#4)</span>
                     <span className="text-muted dark:text-slate-400">Submitted 2h ago &bull; Verified Git Repo</span>
                   </div>
 

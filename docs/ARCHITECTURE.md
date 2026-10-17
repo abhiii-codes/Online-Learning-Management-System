@@ -68,7 +68,7 @@ The Online Learning Management System (LMS) is engineered following a clean, dec
   * Renders responsive, accessible, interactive user dashboards.
   * Manages client-side routing and view state.
   * Translates user events into asynchronous `fetch()` API calls with JSON bodies.
-  * Includes a built-in **Viva Evaluation Bar** allowing academic evaluators to switch roles between Student (`student@lms.edu`), Instructor (`instructor@lms.edu`), and Admin (`admin@lms.edu`) with a single click.
+  * Includes a built-in **Viva Evaluation Bar** allowing academic evaluators to switch roles between Student (`abhinav@student.lms.edu`), Instructor (`aditya@lms.edu`), and Admin (`admin@lms.edu`) with a single click.
 
 ### 2.2 Servlet Controller Tier
 * **Technology:** Jakarta Servlet Specification 6.0 (`jakarta.servlet.http.HttpServlet`).

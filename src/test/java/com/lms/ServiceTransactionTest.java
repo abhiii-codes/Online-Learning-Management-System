@@ -64,7 +64,7 @@ public class ServiceTransactionTest {
     @Test
     @DisplayName("2. Course Service: Enforces instructor ownership security boundaries")
     void testInstructorOwnershipEnforcement() {
-        // Course 1 is authored by Instructor 2 (Prof. Ada Lovelace)
+        // Course 1 is authored by Instructor 2 (Prof. Aditya Awasthi)
         Course course = courseService.getCourseById(1L);
         assertEquals(2L, course.getInstructorId());
 
