@@ -393,7 +393,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuth, isDark, onToggleD
                   </div>
                   <div>
                     <h3 className="text-sm font-bold text-ink dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
-                      Virat Kohli
+                      Mukesh Kumar
                     </h3>
                     <div className="mt-1 text-[11px] font-mono text-slate-700 dark:text-slate-300 bg-paper dark:bg-slate-800 px-2 py-0.5 rounded border border-line dark:border-slate-700 select-all w-fit font-medium">
                       admin@lms.edu
@@ -410,7 +410,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onOpenAuth, isDark, onToggleD
                     e.stopPropagation();
                     handleDemoLogin('admin@lms.edu', 'Admin');
                   }}
-                  aria-label="Launch Admin Console as Virat Kohli"
+                  aria-label="Launch Admin Console as Mukesh Kumar"
                   className="w-full mt-3 py-2 px-3 rounded-lg bg-purple-600 hover:bg-purple-700 text-white font-medium text-xs flex items-center justify-center space-x-1.5 focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900 focus-visible:outline-none transition-colors"
                 >
                   <span>Launch Admin Console</span>

@@ -154,7 +154,7 @@ This project implements a genuine, production-grade **Online Learning Management
 
 ### 5.2 Evaluator-Friendly Viva Demo Bar
 The application includes a prominent floating **Viva Demo Bar** at the top of the interface:
-* **1-Click Role Switcher:** Instantly toggle between **Student** (`abhinav@student.lms.edu` — Abhinav Singh), **Instructor** (`aditya@lms.edu` — Prof. Aditya Awasthi), and **Admin** (`admin@lms.edu` — Virat Kohli) without manual logout/login steps.
+* **1-Click Role Switcher:** Instantly toggle between **Student** (`abhinav@student.lms.edu` — Abhinav Singh), **Instructor** (`aditya@lms.edu` — Prof. Aditya Awasthi), and **Admin** (`admin@lms.edu` — Mukesh Kumar) without manual logout/login steps.
 * **Architecture Modal:** View real-time technical information about active Servlet endpoints, JDBC connections, and OOP principles.
 
 ---
@@ -233,7 +233,7 @@ Once started:
 ### Default User Credentials
 | Role | Name | Email | Password | Primary Purpose |
 | :--- | :--- | :--- | :--- | :--- |
-| **Admin** | **Virat Kohli** | `admin@lms.edu` | `password123` | System monitoring, audit logs, user management |
+| **Admin** | **Mukesh Kumar** | `admin@lms.edu` | `password123` | System monitoring, audit logs, user management |
 | **Instructor** | **Prof. Aditya Awasthi** | `aditya@lms.edu` | `password123` | Course authoring, assignments, quizzes, grading |
 | **Student** | **Abhinav Singh** | `abhinav@student.lms.edu` | `password123` | Course enrollment, lessons, quiz attempts, submissions |
 

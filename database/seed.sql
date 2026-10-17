@@ -6,7 +6,7 @@
 
 -- 1. SEED USERS (Admin, Instructors, Students)
 INSERT INTO users (id, name, email, password_hash, role, bio, status) VALUES
-(1, 'Virat Kohli', 'admin@lms.edu', '$2a$10$e8m4aF4ZtS0F4mF8Z0xKCe3ZkUfX7rM94zUeN9l6XjYV123abc456', 'ADMIN', 'System Administrator and Academic Governance Lead.', 'ACTIVE'),
+(1, 'Mukesh Kumar', 'admin@lms.edu', '$2a$10$e8m4aF4ZtS0F4mF8Z0xKCe3ZkUfX7rM94zUeN9l6XjYV123abc456', 'ADMIN', 'System Administrator and Academic Governance Lead.', 'ACTIVE'),
 (2, 'Prof. Aditya Awasthi', 'aditya@lms.edu', '$2a$10$e8m4aF4ZtS0F4mF8Z0xKCe3ZkUfX7rM94zUeN9l6XjYV123abc456', 'INSTRUCTOR', 'Professor of Object-Oriented Software Engineering and Java Systems.', 'ACTIVE'),
 (3, 'Dr. Rajesh Sharma', 'rajesh@lms.edu', '$2a$10$e8m4aF4ZtS0F4mF8Z0xKCe3ZkUfX7rM94zUeN9l6XjYV123abc456', 'INSTRUCTOR', 'Associate Professor specializing in Relational Databases and SQL.', 'ACTIVE'),
 (4, 'Abhinav Singh', 'abhinav@student.lms.edu', '$2a$10$e8m4aF4ZtS0F4mF8Z0xKCe3ZkUfX7rM94zUeN9l6XjYV123abc456', 'STUDENT', '3rd-Semester CSE Student enthusiastic about backend engineering.', 'ACTIVE'),
